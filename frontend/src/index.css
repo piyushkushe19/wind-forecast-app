@@ -1,0 +1,65 @@
+:root {
+  --bg: #0a0e14;
+  --bg2: #111820;
+  --bg3: #161d28;
+  --panel: #1a2232;
+  --border: #1e2d40;
+  --border2: #253347;
+  --text: #d4e4f7;
+  --text2: #7a9bbf;
+  --text3: #3f5a7a;
+  --accent-blue: #4da8ff;
+  --accent-green: #3dffa0;
+  --accent-amber: #ffb840;
+  --accent-red: #ff5c5c;
+  --font-display: 'Cabinet Grotesk', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+input {
+  font-family: var(--font-mono);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
