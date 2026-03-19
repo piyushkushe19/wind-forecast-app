@@ -18,7 +18,7 @@ async function bmrsGet(endpoint, params) {
   const text = await res.text();
   if (!res.ok) throw new Error(`BMRS ${res.status}: ${text.slice(0, 300)}`);
   const parsed = JSON.parse(text);
-    const rows = Array.isArray(parsed) ? parsed : (parsed.data || []);
+  const rows = Array.isArray(parsed) ? parsed : (parsed.data || []);
   console.log(`  <- ${rows.length} rows`);
   return rows;
 }
