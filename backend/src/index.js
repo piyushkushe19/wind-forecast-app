@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
+import https from 'https';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -9,10 +10,16 @@ app.use(express.json());
 
 const BMRS_BASE = 'https://data.elexon.co.uk/bmrs/api/v1';
 
+// Agent that disables strict SSL — needed on some Node 24 / macOS setups
+const agent = new https.Agent({ rejectUnauthorized: false });
+
 async function bmrsGet(endpoint, params) {
   const url = `${BMRS_BASE}/${endpoint}?${new URLSearchParams(params)}`;
   console.log('GET', url);
-  const res = await fetch(url, { headers: { Accept: 'application/json' } });
+  const res = await fetch(url, {
+    headers: { Accept: 'application/json' },
+    agent,
+  });
   const text = await res.text();
   if (!res.ok) throw new Error(`BMRS ${res.status}: ${text.slice(0, 300)}`);
   const rows = JSON.parse(text).data || [];
@@ -27,7 +34,6 @@ app.get('/api/actuals', async (req, res) => {
     const fromDate = new Date(from);
     const toDate   = new Date(to);
 
-    // FUELHH requires settlementDateFrom/To as YYYY-MM-DD
     const rows = await bmrsGet('datasets/FUELHH/stream', {
       settlementDateFrom: fromDate.toISOString().slice(0, 10),
       settlementDateTo:   toDate.toISOString().slice(0, 10),
@@ -62,7 +68,6 @@ app.get('/api/forecasts', async (req, res) => {
     const toDate       = new Date(to);
     const publishFrom  = new Date(fromDate.getTime() - 48 * 3600 * 1000);
 
-    // WINDFOR requires publishDateTimeFrom/To as YYYY-MM-DD
     const rows = await bmrsGet('datasets/WINDFOR/stream', {
       publishDateTimeFrom: publishFrom.toISOString().slice(0, 10),
       publishDateTimeTo:   toDate.toISOString().slice(0, 10),
