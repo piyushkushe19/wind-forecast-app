@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import WindChart from './components/WindChart.jsx';
 import MetricCard from './components/MetricCard.jsx';
 import DateRangePicker from './components/DateRangePicker.jsx';
@@ -10,9 +10,9 @@ function toDatetimeLocal(d) {
   return format(d, "yyyy-MM-dd'T'HH:mm");
 }
 
-const DEFAULT_END = new Date();
-DEFAULT_END.setMinutes(0, 0, 0);
-const DEFAULT_START = subDays(DEFAULT_END, 3);
+// Default to Jan 2025 — known to have data
+const DEFAULT_START = new Date('2025-01-15T00:00:00Z');
+const DEFAULT_END   = new Date('2025-01-18T00:00:00Z');
 
 export default function App() {
   const [startDate, setStartDate] = useState(toDatetimeLocal(DEFAULT_START));
