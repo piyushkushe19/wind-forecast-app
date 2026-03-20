@@ -27,20 +27,19 @@ The application allows users to:
 
 ## 🏗️ Tech Stack
 
-### Frontend
-- React (Vite)
-- Recharts (for data visualization)
-- Tailwind CSS (responsive UI)
+### 🎨 Frontend
+- ⚛️ React (Vite)  
+- 📊 Recharts (Data Visualization)  
+- 🎨 Tailwind CSS (Responsive UI)  
 
-### Backend
-- Node.js
-- Express.js
+### ⚙️ Backend
+- 🟢 Node.js  
+- 🚀 Express.js  
 
-### Analysis
-- Python
-- Pandas, NumPy
-- Matplotlib / Seaborn
-
+### 📊 Analysis
+- 🐍 Python  
+- 📦 Pandas, NumPy  
+- 📈 Matplotlib / Seaborn  
 ---
 
 ## 📁 Project Structure
