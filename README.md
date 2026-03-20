@@ -8,8 +8,8 @@ A full-stack application for monitoring UK national wind power generation foreca
 
 ## Live Demo
 
-🌐 **Frontend:** `https://YOUR_APP.vercel.app` *(update after deployment)*  
-🎥 **Video demo:** `https://youtu.be/YOUR_VIDEO_ID` *(update after recording)*
+🌐 **Frontend:** `https://wind-forecast-app-8tme.vercel.app` 
+🎥 **Video demo:** `https://youtu.be/YOUR_VIDEO_ID` 
 
 ---
 
