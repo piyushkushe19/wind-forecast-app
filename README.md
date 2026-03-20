@@ -1,152 +1,203 @@
-# UK Wind Power Forecast Monitor
+# 🌬️ UK Wind Power Forecast Monitoring System
 
-A full-stack application for monitoring UK national wind power generation forecasts against actuals, with supporting analysis of forecast error characteristics and reliable wind capacity estimation.
-
-> **AI tools used:** This application was built with AI assistance (Claude) for code generation, UI scaffolding, and analysis structure. All analytical reasoning, metric choices, and interpretation are original.
+A full-stack application built to analyze and visualize the accuracy of wind power forecasts in the United Kingdom. The system compares forecasted wind generation with actual generation and provides insights into forecast reliability and error behavior.
 
 ---
 
-## Live Demo
+## 🌐 Live Demo
 
-🌐 **Frontend:** `https://wind-forecast-app-8tme.vercel.app` 
-🎥 **Video demo:** `https://youtu.be/YOUR_VIDEO_ID` 
+- **Frontend:** https://wind-forecast-app-8tme.vercel.app  
+- **Backend API:** https://wind-forecast-app-1.onrender.com  
+- **Demo Video:** https://youtu.be/YOUR_VIDEO_ID  
 
 ---
 
-## Repository Structure
+## 📌 Project Overview
 
-```
-wind-forecast/
-├── frontend/                  # React + Vite frontend application
-│   ├── src/
-│   │   ├── App.jsx            # Root component, controls layout
-│   │   ├── components/
-│   │   │   ├── WindChart.jsx  # Recharts time-series chart
-│   │   │   ├── MetricCard.jsx # Individual error metric display
-│   │   │   ├── DateRangePicker.jsx  # Start/end datetime inputs
-│   │   │   └── HorizonSlider.jsx    # Configurable forecast horizon
-│   │   ├── hooks/
-│   │   │   └── useWindData.js # Data-fetching hook (actuals + forecasts)
-│   │   └── utils/
-│   │       └── api.js         # API calls, data merging, metric computation
-│   ├── index.html
-│   ├── vite.config.js
-│   └── vercel.json            # Rewrite rules for backend proxy
+This project focuses on solving a real-world problem in energy systems:  
+**How accurate are wind power forecasts, and how much wind energy can we reliably depend on?**
+
+The application allows users to:
+- Visualize actual vs forecasted wind generation
+- Adjust forecast horizon dynamically
+- Analyze forecast errors in real time
+- Understand reliability of wind power using historical data
+
+---
+
+## 🏗️ Tech Stack
+
+### Frontend
+- React (Vite)
+- Recharts
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express.js
+
+### Analysis
+- Python
+- Pandas, NumPy
+- Matplotlib / Seaborn
+
+---
+
+## 📁 Project Structure
+
+
+wind-forecast-app/
 │
-├── backend/                   # Node.js + Express API proxy
-│   └── src/
-│       └── index.js           # Proxy endpoints for Elexon BMRS API
+├── frontend/ # React frontend
+│ ├── components/ # UI components
+│ ├── hooks/ # Custom hooks
+│ ├── utils/ # API + data logic
+│ └── vercel.json # Deployment config
 │
-└── analysis/
-    ├── wind_analysis.ipynb    # Jupyter notebook: forecast error + reliability
-    └── requirements.txt       # Python dependencies
-```
+├── backend/ # Express backend
+│ └── src/index.js # API routes & logic
+│
+├── analysis/ # Data analysis
+│ ├── wind_analysis.ipynb # Jupyter notebook
+│ └── requirements.txt
+│
+└── README.md
+
 
 ---
 
-## How to Run
+## 🚀 Key Features
 
-### Prerequisites
+### 📊 Forecast Monitoring Dashboard
+- Interactive time-series chart
+- Actual generation vs forecasted generation
+- 30-minute resolution data
 
-- Node.js ≥ 18
-- Python ≥ 3.10 (for the notebook)
+### 🎚 Forecast Horizon Control
+- Adjustable (1–48 hours)
+- Shows latest available forecast before target time
+
+### 📅 Date Range Selection
+- Custom start and end time selection
+
+### 📈 Error Metrics
+- MAE (Mean Absolute Error)
+- RMSE (Root Mean Square Error)
+- Bias
+- Median Error
+- P90 Error
+- Coverage within ±500 MW
+
+### 📱 Responsive Design
+- Fully optimized for mobile and desktop
+
+---
+
+## ⚙️ How It Works
+
+### Forecast Selection Logic
+
+For each timestamp:
+- Select forecasts where:
+  publishTime ≤ targetTime - horizon
+- Choose the latest available forecast
+- Ignore missing values
+
+---
+
+## 🔌 API Endpoints
+
+### Backend Routes
+
+- `/api/actuals`  
+  Fetches actual wind generation data  
+
+- `/api/forecasts`  
+  Returns filtered forecasts based on horizon  
+
+- `/health`  
+  Health check endpoint  
+
+---
+
+## ▶️ Running Locally
 
 ### 1. Backend
 
 ```bash
 cd backend
 npm install
-npm start           # starts on :3001
-# or: npm run dev   # with --watch for development
-```
-
-The backend exposes:
-- `GET /api/actuals?from=<ISO>&to=<ISO>` — wind generation actuals (FUELHH, fuelType=WIND)
-- `GET /api/forecasts?from=<ISO>&to=<ISO>&horizon=<h>` — WINDFOR forecasts filtered to the latest forecast ≥ horizon hours before each target time
-- `GET /health` — health check
-
-### 2. Frontend
-
-```bash
+npm start
+2. Frontend
 cd frontend
-cp .env.example .env          # copy environment template
-# Edit .env if backend is not at localhost:3001
 npm install
-npm run dev                   # starts on :5173
-```
-
-Open [http://localhost:5173](http://localhost:5173).
-
-### 3. Analysis notebook
-
-```bash
+npm run dev
+3. Analysis
 cd analysis
 pip install -r requirements.txt
 jupyter notebook wind_analysis.ipynb
-```
+☁️ Deployment
+Frontend
 
-Run all cells from top to bottom. The notebook fetches data directly from the Elexon BMRS API — no local data files needed. Expect ~5–10 minutes for a full data pull (Jan 2025 → present).
+Deployed on Vercel
 
----
+Backend
 
-## Deployment
+Deployed on Render
 
-### Backend — Render / Railway
+Notes
 
-1. Push the `backend/` directory to a git repo (or monorepo root).
-2. Set the **start command** to `node src/index.js`.
-3. Set environment variable `PORT` (Render/Railway set this automatically).
-4. Note the deployed URL, e.g. `https://wind-backend.onrender.com`.
+Backend may take a few seconds to respond initially due to free tier cold start.
 
-### Frontend — Vercel
+📊 Analysis & Insights
 
-1. In `frontend/vercel.json`, replace `YOUR_BACKEND_URL` with the backend URL above.
-2. In `frontend/.env.production`, set:
-   ```
-   VITE_API_URL=https://wind-backend.onrender.com/api
-   ```
-3. Deploy with `vercel --prod` from the `frontend/` directory, or connect the repo in the Vercel dashboard.
+The analysis focuses on understanding forecast accuracy and wind reliability:
 
----
+Key Observations
 
-## Application Features
+Forecast error increases with longer horizons
 
-| Feature | Description |
-|---------|-------------|
-| **Date range picker** | Select any start/end datetime from Jan 2025 onwards |
-| **Forecast horizon slider** | Configurable 1–48h; controls which forecasts are shown |
-| **Time-series chart** | Actual (blue area) vs forecast (green dashed) at 30-min resolution |
-| **Tooltip** | Hover shows actual, forecast, and signed error at each time step |
-| **Error metrics** | MAE, RMSE, bias, median error, P90, and ±500 MW coverage |
-| **Mobile responsive** | Controls stack vertically on small screens |
-| **Loading states** | Spinner during fetch; animated status indicator in header |
-| **Error banner** | Displays API errors clearly with the underlying message |
+Certain times of day show higher variability
 
----
+Error distribution shows occasional large deviations
 
-## Design decisions
+⚡ Reliability Recommendation
 
-### Backend as proxy
-The Elexon BMRS API does not send CORS headers permitting browser requests. A lightweight Express proxy handles authentication concerns and paginates the API transparently.
+Based on historical wind generation data:
 
-### "Latest forecast ≥ horizon" logic
-For each target `startTime`, we take the **most recently published** forecast whose publish time is at least `horizon` hours before the target. This is what an operator would have access to in real time.
+A conservative estimate of reliable wind capacity is derived using lower percentile values (P10).
 
-### Forecast horizon filter (0–48h)
-As specified, only forecasts with a horizon between 0 and 48 hours are included. This eliminates very long-range outlier forecasts that are rarely operationally relevant.
+This ensures high confidence in availability even during low-wind conditions.
 
-### Analysis methodology
-- **MAE** is the primary error metric — interpretable in MW and directly useful for reserve sizing.
-- **P10 of actual generation** is used as the reliable capacity estimate, consistent with industry practice (also called "firm capacity" or "dependable capacity" in capacity market frameworks).
-- **Summer P10** is the binding constraint for annual planning because UK summer has structurally lower wind speeds than winter.
+This value can be used for:
 
----
+Grid planning
 
-## Data Sources
+Reserve estimation
 
-| Source | Endpoint | Description |
-|--------|----------|-------------|
-| Elexon BMRS | `FUELHH/stream` | Half-hourly actual fuel-level generation |
-| Elexon BMRS | `WINDFOR/stream` | National wind power forecasts with publish timestamps |
+Energy reliability assessment
 
-Both endpoints are public and require no API key.
+📚 Data Sources
+
+Elexon BMRS API
+
+FUELHH (Actual Generation)
+
+WINDFOR (Forecast Data)
+
+🎯 Conclusion
+
+This project demonstrates:
+
+Full-stack development (React + Node.js)
+
+Real-time data handling
+
+Data visualization and UI design
+
+Analytical reasoning using real-world datasets
+
+👨‍💻 Author
+
+Piyush Kushe
+Computer Engineering Student | Full Stack Developer
