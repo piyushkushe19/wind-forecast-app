@@ -29,8 +29,8 @@ The application allows users to:
 
 ### Frontend
 - React (Vite)
-- Recharts
-- Tailwind CSS
+- Recharts (for data visualization)
+- Tailwind CSS (responsive UI)
 
 ### Backend
 - Node.js
@@ -45,23 +45,34 @@ The application allows users to:
 
 ## 📁 Project Structure
 
+```
+wind-forecast/
+├── frontend/                  # React + Vite frontend application
+│   ├── src/
+│   │   ├── App.jsx            # Root component, controls layout
+│   │   ├── components/
+│   │   │   ├── WindChart.jsx  # Recharts time-series chart
+│   │   │   ├── MetricCard.jsx # Individual error metric display
+│   │   │   ├── DateRangePicker.jsx  # Start/end datetime inputs
+│   │   │   └── HorizonSlider.jsx    # Configurable forecast horizon
+│   │   ├── hooks/
+│   │   │   └── useWindData.js # Data-fetching hook (actuals + forecasts)
+│   │   └── utils/
+│   │       └── api.js         # API calls, data merging, metric computation
+│   ├── index.html
+│   ├── vite.config.js
+│   └── vercel.json            # Rewrite rules for backend proxy
+│
+├── backend/                   # Node.js + Express API proxy
+│   └── src/
+│       └── index.js           # Proxy endpoints for Elexon BMRS API
+│
+└── analysis/
+    ├── wind_analysis.ipynb    # Jupyter notebook: forecast error + reliability
+    └── requirements.txt       # Python dependencies
+```
 
-wind-forecast-app/
-│
-├── frontend/ # React frontend
-│ ├── components/ # UI components
-│ ├── hooks/ # Custom hooks
-│ ├── utils/ # API + data logic
-│ └── vercel.json # Deployment config
-│
-├── backend/ # Express backend
-│ └── src/index.js # API routes & logic
-│
-├── analysis/ # Data analysis
-│ ├── wind_analysis.ipynb # Jupyter notebook
-│ └── requirements.txt
-│
-└── README.md
+---
 
 
 ---
@@ -127,77 +138,93 @@ For each timestamp:
 ```bash
 cd backend
 npm install
-npm start
-2. Frontend
+npm start           # starts on :3001
+# or: npm run dev   # with --watch for development
+```
+
+The backend exposes:
+- `GET /api/actuals?from=<ISO>&to=<ISO>` — wind generation actuals (FUELHH, fuelType=WIND)
+- `GET /api/forecasts?from=<ISO>&to=<ISO>&horizon=<h>` — WINDFOR forecasts filtered to the latest forecast ≥ horizon hours before each target time
+- `GET /health` — health check
+
+### 2. Frontend
+
+```bash
 cd frontend
+cp .env.example .env          # copy environment template
+# Edit .env if backend is not at localhost:3001
 npm install
-npm run dev
-3. Analysis
+npm run dev                   # starts on :5173
+```
+
+Open [http://localhost:5173](http://localhost:5173).
+
+### 3. Analysis notebook
+
+```bash
 cd analysis
 pip install -r requirements.txt
 jupyter notebook wind_analysis.ipynb
-☁️ Deployment
-Frontend
+```
 
-Deployed on Vercel
+### ☁️ Deployment
 
-Backend
+**Frontend**
+- Deployed on Vercel
 
-Deployed on Render
+**Backend**
+- Deployed on Render
 
-Notes
+**Notes**
+- Backend may take a few seconds to respond initially due to free tier cold start.
 
-Backend may take a few seconds to respond initially due to free tier cold start.
+---
 
-📊 Analysis & Insights
+## 📊 Analysis & Insights
 
-The analysis focuses on understanding forecast accuracy and wind reliability:
+The analysis focuses on understanding forecast accuracy and wind reliability.
 
-Key Observations
+### Key Observations
+- Forecast error increases with longer horizons  
+- Certain times of day show higher variability  
+- Error distribution is skewed with occasional large deviations  
 
-Forecast error increases with longer horizons
+---
 
-Certain times of day show higher variability
-
-Error distribution shows occasional large deviations
-
-⚡ Reliability Recommendation
+## ⚡ Reliability Recommendation
 
 Based on historical wind generation data:
 
-A conservative estimate of reliable wind capacity is derived using lower percentile values (P10).
+- A conservative estimate of reliable wind capacity is derived using lower percentile values (P10)  
+- This ensures high confidence in availability even during low-wind conditions  
 
-This ensures high confidence in availability even during low-wind conditions.
+👉 This value can be used for:
+- Grid planning  
+- Reserve estimation  
+- Energy reliability assessment  
 
-This value can be used for:
+---
 
-Grid planning
+## 📚 Data Sources
 
-Reserve estimation
+- Elexon BMRS API  
+  - FUELHH (Actual Generation)  
+  - WINDFOR (Forecast Data)  
 
-Energy reliability assessment
+---
 
-📚 Data Sources
-
-Elexon BMRS API
-
-FUELHH (Actual Generation)
-
-WINDFOR (Forecast Data)
-
-🎯 Conclusion
+## 🎯 Conclusion
 
 This project demonstrates:
 
-Full-stack development (React + Node.js)
+- Full-stack development (React + Node.js)  
+- Real-time data processing  
+- Data visualization and UX design  
+- Analytical thinking applied to energy systems  
 
-Real-time data handling
+---
 
-Data visualization and UI design
+## 👨‍💻 Author
 
-Analytical reasoning using real-world datasets
-
-👨‍💻 Author
-
-Piyush Kushe
-Computer Engineering Student | Full Stack Developer
+**Piyush Kushe**  
+Computer Engineering Student | Full Stack Developer  
